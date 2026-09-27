@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RoomSplit – Smart Shared Living Expense Manager</title>
+<meta name="theme-color" content="#6d5dfc">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);--bg:#f3f1ff;--gl:rgba(255,255,255,.74);--tx:#1b1740;--mu:#6d6a8f;--bd:rgba(120,110,200,.18);--pr:#6d5dfc;--pr2:#ec4899;--ok:#10b981;--bad:#f43f5e;--in:rgba(110,100,200,.08);--ff-b:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--ff-h:'Manrope','Inter',system-ui,sans-serif}
+:root[data-theme=dark]{--bg:#0b0a1f;--gl:rgba(28,26,64,.72);--tx:#f0eefe;--mu:#a29fca;--bd:rgba(160,150,255,.16);--pr:#8b7cff;--pr2:#f472b6;--ok:#34d399;--bad:#fb7185;--in:rgba(160,150,255,.1)}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;color:var(--tx);font-family:var(--ff-b);letter-spacing:.1px;background:var(--bg);background-image:radial-gradient(600px 400px at 10% 0,rgba(109,93,252,.28),transparent),radial-gradient(500px 400px at 100% 20%,rgba(236,72,153,.2),transparent),radial-gradient(600px 500px at 40% 100%,rgba(16,185,129,.14),transparent);background-attachment:fixed;min-height:100vh}
+.side{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;overflow-x:auto;gap:2px;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));background:var(--gl);backdrop-filter:blur(18px);border-top:1px solid var(--bd)}
+.side .lg{display:none}.side button{flex:1 0 auto;min-width:60px;border:0;background:none;color:var(--mu);padding:6px 8px;border-radius:12px;cursor:pointer;font:600 10px var(--ff-b);display:flex;flex-direction:column;align-items:center;gap:2px;transition:.2s}
+.side button span{font-size:19px}.side button.on{background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;box-shadow:0 6px 18px rgba(109,93,252,.4)}
+.main{padding:14px 14px 110px;max-width:1150px;margin:0 auto}
+@media(min-width:900px){.side{top:0;bottom:auto;right:auto;width:220px;height:100vh;flex-direction:column;padding:18px 12px;border-top:0;border-right:1px solid var(--bd)}
+.side .lg{display:block;font:800 22px var(--ff-h);padding:4px 10px 18px;background:linear-gradient(90deg,var(--pr),var(--pr2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.side button{flex:0 0 auto;flex-direction:row;font-size:14px;gap:10px;padding:11px 12px;width:100%;justify-content:flex-start}.side button span{font-size:18px}.main{margin-left:220px;padding:24px 28px 60px;max-width:none}.main>div{max-width:1100px;margin:auto}}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+h1{margin:0;font:800 26px var(--ff-h)}h2{margin:0 0 12px;font:700 16px var(--ff-h)}.sub{color:var(--mu);font-size:13px;margin:2px 0 0}
+.card{background:var(--gl);backdrop-filter:blur(16px);border:1px solid var(--bd);border-radius:20px;padding:18px;box-shadow:0 8px 30px rgba(60,50,140,.08);animation:up .5s both;transition:transform .25s,box-shadow .25s}
+.card.hv{cursor:pointer}.card.hv:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(109,93,252,.22)}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}@keyframes fade{from{opacity:0}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes bob{50%{transform:translateY(-8px)}}@keyframes slide{50%{transform:translateX(6px)}}@keyframes sh{to{background-position:-200% 0}}@keyframes fall{from{transform:translateY(-10vh) rotate(0)}to{transform:translateY(105vh) rotate(540deg)}}@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}to{transform:none;opacity:1}}
+.grid{display:grid;gap:14px;margin-bottom:14px}.g4{grid-template-columns:repeat(auto-fit,minmax(165px,1fr))}.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.hero{background:linear-gradient(135deg,#6d5dfc,#ec4899);color:#fff;border:0}.hero b{font:800 34px var(--ff-h);display:block;margin:4px 0}
+.stat span{color:var(--mu);font-size:12px;font-weight:600}.stat b{display:block;font:800 21px var(--ff-h);margin-top:4px}
+.btn{border:0;border-radius:12px;padding:10px 18px;font:700 14px var(--ff-b);cursor:pointer;background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;transition:.2s;box-shadow:0 6px 16px rgba(109,93,252,.3)}.btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.btn.g{background:var(--in);color:var(--tx);box-shadow:none;border:1px solid var(--bd)}.btn.s{padding:6px 11px;font-size:12px}.btn.d{background:none;color:var(--bad);box-shadow:none;padding:5px 8px}
+input,select,textarea{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--bd);background:var(--in);color:var(--tx);font:inherit;font-family:var(--ff-b);font-size:14px}input:focus,select:focus,textarea:focus{outline:2px solid var(--pr);border-color:transparent}
+label{font-size:12px;font-weight:700;color:var(--mu);display:block;margin:12px 0 5px}.err{color:var(--bad);font-size:12px;margin-top:5px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)}.row:last-child{border:0}
+.pill{padding:3px 9px;border-radius:99px;font-size:11px;font-weight:700;color:#fff;white-space:nowrap}.mu{color:var(--mu);font-size:12px}.pos{color:var(--ok);font-weight:800}.neg{color:var(--bad);font-weight:800}
+.bar{height:10px;background:var(--in);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;border-radius:9px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.av{border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:800;flex:0 0 auto;box-shadow:0 4px 12px rgba(0,0,0,.2);object-fit:cover}
+.modal{position:fixed;inset:0;background:rgba(8,6,30,.6);display:flex;align-items:center;justify-content:center;padding:16px;z-index:30;animation:fade .2s}.modal .card{width:100%;max-width:520px;max-height:92vh;overflow:auto;animation:pop .3s}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{padding:7px 12px;border-radius:99px;border:1px solid var(--bd);background:var(--in);cursor:pointer;font-size:13px;color:var(--tx);transition:.2s;user-select:none}.chip.on{background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;border-color:transparent}
+.empty{text-align:center;color:var(--mu);padding:28px 0;font-size:14px}.empty div{font-size:44px;animation:bob 2.5s infinite}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}.toast div{background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:14px;font-size:14px;font-weight:600;animation:up .3s;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.fab{position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:12;border-radius:99px;padding:14px 20px;font-size:15px;box-shadow:0 10px 28px rgba(109,93,252,.5)}
+@media(min-width:900px){.toast{bottom:28px}.fab{bottom:28px;right:32px}}
+.sk{background:linear-gradient(90deg,var(--in) 25%,var(--bd) 50%,var(--in) 75%);background-size:200% 100%;animation:sh 1.2s infinite;border-radius:16px;height:110px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--bd);white-space:nowrap}th{color:var(--mu);font-size:12px}.scroll{overflow-x:auto}
+.pay{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between;width:100%}.pay .ar{flex:1;min-width:90px;text-align:center;font-weight:800;color:var(--pr);animation:slide 1.6s infinite}.tag{font-size:11px;background:var(--in);border-radius:6px;padding:2px 7px;color:var(--mu)}
+.cf{position:fixed;top:0;font-size:24px;z-index:70;pointer-events:none;animation:fall 3.5s linear forwards}
+.welcome{min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding:20px}.welcome h1{font:800 38px var(--ff-h)}
+.thumb{width:54px;height:54px;border-radius:10px;object-fit:cover;border:1px solid var(--bd)}
+</style></head>
+<body><div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<script type="text/babel">
+const {useState,useEffect}=React;
+/* ---- Data layer: swap load/save for a Firebase/MongoDB API later; the UI never touches storage directly ---- */
+const KEY="roomsplit-v2";
+const api={load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}},save(s){try{localStorage.setItem(KEY,JSON.stringify(s));return true}catch(e){return false}}};
+const COLORS=["#6366f1","#ec4899","#f59e0b","#10b981","#06b6d4","#a855f7","#ef4444","#84cc16","#f97316","#14b8a6"];
+const SUGG=[["Rent","🏠","#6366f1"],["Electricity","💡","#f59e0b"],["Water","💧","#06b6d4"],["Internet","📶","#8b5cf6"],["Groceries","🛒","#10b981"],["Gas","🔥","#ef4444"],["Food","🍜","#f97316"],["Cleaning","🧹","#14b8a6"],["Netflix","🎬","#ec4899"],["Travel","🚌","#3b82f6"],["Maintenance","🔧","#64748b"],["Shopping","🛍️","#a855f7"]];
+const ICONS=["🏠","💡","💧","📶","🛒","🔥","🍜","🧹","🎬","🚌","🔧","🛍️","☕","🍕","🎮","💊","📚","🐶","🎁","📦"];
+const uid=()=>Math.random().toString(36).slice(2,9);
+let CUR="₹";const money=n=>CUR+(Math.round(n*100)/100).toLocaleString("en-IN");const r2=n=>Math.round(n*100)/100;
+const todayS=new Date().toISOString().slice(0,10);
+const mk=(date,st)=>{const [y,m,d]=date.split("-").map(Number);if(st>1&&d<st){const p=new Date(y,m-2,1);return p.getFullYear()+"-"+String(p.getMonth()+1).padStart(2,"0")}return date.slice(0,7)};
+const mLabel=k=>new Date(k+"-15").toLocaleString("en",{month:"long",year:"numeric"});
+const mShort=k=>new Date(k+"-15").toLocaleString("en",{month:"short"});
+const toImg=(file,max,q)=>new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",q))};im.src=r.result};r.readAsDataURL(file)});
+function shares(e,ms){
+  const s={};ms.forEach(m=>s[m.id]=0);
+  if(e.personal){if(s[e.paidBy]!==undefined)s[e.paidBy]=e.amount;return s}
+  if(e.type==="equal"){const l=(e.split.sel||ms.map(m=>m.id)).filter(i=>s[i]!==undefined);l.forEach(i=>s[i]=e.amount/l.length)}
+  else if(e.type==="custom")Object.entries(e.split.vals||{}).forEach(([i,v])=>{if(s[i]!==undefined)s[i]=+v||0});
+  else Object.entries(e.split.vals||{}).forEach(([i,v])=>{if(s[i]!==undefined)s[i]=e.amount*(+v||0)/100});
+  return s;
+}
+function calc(room,k){
+  const ms=room.members,st=room.start||1,list=room.expenses.filter(e=>mk(e.date,st)===k),o={paid:{},share:{},pers:{},shr:{},cat:{},day:{}};let total=0,pTot=0;
+  ms.forEach(m=>{o.paid[m.id]=o.share[m.id]=o.pers[m.id]=o.shr[m.id]=0});
+  list.forEach(e=>{total+=e.amount;o.cat[e.categoryId]=(o.cat[e.categoryId]||0)+e.amount;o.day[e.date]=(o.day[e.date]||0)+e.amount;if(e.personal)pTot+=e.amount;if(o.paid[e.paidBy]!==undefined)o.paid[e.paidBy]+=e.amount;
+    const s=shares(e,ms);Object.keys(s).forEach(i=>{o.share[i]+=s[i];e.personal?o.pers[i]+=s[i]:o.shr[i]+=s[i]})});
+  const bal={};ms.forEach(m=>bal[m.id]=r2(o.paid[m.id]-o.share[m.id]));
+  const cr=ms.filter(m=>bal[m.id]>0.009).map(m=>({id:m.id,v:bal[m.id]})).sort((a,b)=>b.v-a.v),db=ms.filter(m=>bal[m.id]<-0.009).map(m=>({id:m.id,v:-bal[m.id]})).sort((a,b)=>b.v-a.v);
+  const tx=[];let i=0,j=0;
+  while(i<db.length&&j<cr.length){const x=r2(Math.min(db[i].v,cr[j].v));tx.push({from:db[i].id,to:cr[j].id,amt:x,key:`${db[i].id}>${cr[j].id}|${x}`});db[i].v=r2(db[i].v-x);cr[j].v=r2(cr[j].v-x);if(db[i].v<=0.009)i++;if(cr[j].v<=0.009)j++}
+  const mo=room.months[k]||{},settled=mo.settled||{},done=tx.filter(t=>settled[t.key]).length;
+  return{...o,list,total,pTot,bal,tx,settled,done,budget:mo.budget??room.budget??0,archived:!!mo.archived,k,status:!tx.length?"Settled":done===tx.length?"Settled":"Pending"};
+}
+function useCount(v){const [n,setN]=useState(0);useEffect(()=>{let f,s=null;const st=t=>{s=s||t;const p=Math.min(1,(t-s)/800);setN(v*(1-Math.pow(1-p,3)));if(p<1)f=requestAnimationFrame(st)};f=requestAnimationFrame(st);return()=>cancelAnimationFrame(f)},[v]);return n}
+const Count=({v})=>money(useCount(v));
+const Av=({m,size=38})=>m?.photo?<img className="av" src={m.photo} alt={m.name} style={{width:size,height:size}}/>:<span className="av" style={{background:m?.color||"#888",width:size,height:size,fontSize:size/2.3}}>{(m?.name||"?")[0].toUpperCase()}</span>;
+const Empty=({icon="🫥",t})=><div className="empty"><div>{icon}</div>{t}</div>;
+const Field=({label,error,children})=><div><label>{label}</label>{children}{error&&<div className="err">{error}</div>}</div>;
+const Modal=({title,onClose,children,wide})=><div className="modal" onClick={onClose}><div className="card" style={wide?{maxWidth:640}:{}} onClick={e=>e.stopPropagation()}><div className="row" style={{border:0,paddingTop:0}}><h2 style={{margin:0}}>{title}</h2><button className="btn g s" onClick={onClose}>✕</button></div>{children}</div></div>;
+function PhotoPick({m,onPick}){return <label style={{cursor:"pointer",position:"relative",display:"inline-block"}}><Av m={m} size={54}/><span style={{position:"absolute",right:-4,bottom:-4,background:"var(--pr)",color:"#fff",borderRadius:"50%",width:22,height:22,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11}}>📷</span><input type="file" accept="image/*" style={{display:"none"}} onChange={async e=>{const f=e.target.files[0];if(f)onPick(await toImg(f,256,.8))}}/></label>}
+function Donut({data,on}){
+  const tot=data.reduce((a,x)=>a+x.v,0),R=52,C=2*Math.PI*R;let off=0;if(!tot)return <Empty icon="📊" t="No spending yet"/>;
+  return <div style={{display:"flex",gap:16,alignItems:"center",flexWrap:"wrap"}}><svg width="150" height="150" viewBox="0 0 140 140" style={{transform:"rotate(-90deg)"}}><circle cx="70" cy="70" r={R} fill="none" stroke="var(--in)" strokeWidth="20"/>
+    {data.map(x=>{const l=x.v/tot*C,el=<circle key={x.k} onClick={()=>on&&on(x)} cx="70" cy="70" r={R} fill="none" stroke={x.c} strokeWidth="20" strokeDasharray={`${l} ${C-l}`} strokeDashoffset={-off} style={{transition:"all .8s",cursor:on?"pointer":"default"}}/>;off+=l;return el})}</svg>
+    <div style={{flex:1,minWidth:140}}>{data.map(x=><div key={x.k} className="row" style={{padding:"5px 0",cursor:on?"pointer":"default"}} onClick={()=>on&&on(x)}><span style={{fontSize:13}}><i style={{display:"inline-block",width:10,height:10,borderRadius:3,background:x.c,marginRight:6}}/>{x.icon} {x.n}</span><b style={{fontSize:13}}>{Math.round(x.v/tot*100)}%</b></div>)}</div></div>;
+}
+const Bars=({data,on})=>{const mx=Math.max(...data.map(x=>x.v),1);return data.length?<div>{data.map(x=><div key={x.k} style={{marginBottom:12,cursor:on?"pointer":"default"}} onClick={()=>on&&on(x)}><div className="row" style={{border:0,padding:"0 0 4px"}}><span style={{fontSize:13}}>{x.n}</span><b style={{fontSize:13}}>{money(x.v)}</b></div><div className="bar"><i style={{width:x.v/mx*100+"%",background:x.c||"linear-gradient(90deg,var(--pr),var(--pr2))"}}/></div></div>)}</div>:<Empty icon="📊" t="Nothing to compare yet"/>};
+function Ring({p,size=90,label,color="var(--ok)"}){const R=38,C=2*Math.PI*R;return <div style={{position:"relative",width:size,height:size,flex:"0 0 auto"}}><svg width={size} height={size} viewBox="0 0 90 90" style={{transform:"rotate(-90deg)"}}><circle cx="45" cy="45" r={R} fill="none" stroke="var(--in)" strokeWidth="9"/><circle cx="45" cy="45" r={R} fill="none" stroke={color} strokeWidth="9" strokeLinecap="round" strokeDasharray={`${Math.min(1,p)*C} ${C}`} style={{transition:"all .8s"}}/></svg><b style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",fontSize:15}}>{label}</b></div>}
+const cinfo=(room,id)=>room.categories.find(c=>c.id===id)||{name:"Uncategorised",icon:"📦",color:"#64748b"};
+const catData=(room,c)=>Object.entries(c.cat).map(([id,v])=>{const x=cinfo(room,id);return{k:id,v,n:x.name,icon:x.icon,c:x.color}}).sort((a,b)=>b.v-a.v);
+const badge=c=><span className="pill" style={{background:c.status==="Settled"?"var(--ok)":"var(--bad)",padding:"7px 14px",fontSize:13}}>{c.status==="Settled"&&c.total>0?"✅ Settled":c.status==="Settled"?"—":"⏳ Pending"}</span>;
+
+function Tx({room,c,toggle}){
+  const nm=id=>room.members.find(m=>m.id===id);
+  if(!c.tx.length)return <Empty icon={c.total?"🎉":"🧾"} t={c.total?"Everyone is even – nothing to settle!":"Add expenses to see the settlement"}/>;
+  return <div>{c.tx.map(t=>{const ok=c.settled[t.key];return <div key={t.key} className="row"><div className="pay"><span style={{display:"flex",alignItems:"center",gap:8}}><Av m={nm(t.from)} size={34}/><b>{nm(t.from)?.name}</b></span>
+    <span className="ar" style={ok?{animation:"none",color:"var(--ok)"}:{}}>{money(t.amt)} ➜</span><span style={{display:"flex",alignItems:"center",gap:8}}><Av m={nm(t.to)} size={34}/><b>{nm(t.to)?.name}</b></span>
+    {toggle&&<button className={"btn s"+(ok?" g":"")} onClick={()=>toggle(t.key)}>{ok?"✅ Settled":"⏳ Mark as Paid"}</button>}</div></div>})}</div>;
+}
+
+function RoomWizard({onSave,onClose,first}){
+  const [f,setF]=useState({name:"",loc:"",budget:"",start:"1",cur:"₹"}),[rows,setRows]=useState([{id:uid(),name:"",photo:""},{id:uid(),name:"",photo:""}]),[cats,setCats]=useState(SUGG.map(s=>s[0])),[er,setEr]=useState("");
+  const setRow=(id,p)=>setRows(rows.map(r=>r.id===id?{...r,...p}:r));
+  const go=e=>{e.preventDefault();const ms=rows.filter(r=>r.name.trim()),low=ms.map(r=>r.name.trim().toLowerCase());
+    if(!f.name.trim())return setEr("Give your room a name");if(ms.length<2)return setEr("Add at least 2 members");if(new Set(low).size!==low.length)return setEr("Member names must be unique");
+    const start=Math.min(28,Math.max(1,+f.start||1));
+    onSave({id:uid(),name:f.name.trim(),loc:f.loc.trim(),budget:+f.budget||0,start,cur:f.cur||"₹",months:{},expenses:[],
+      members:ms.map((r,i)=>({id:r.id,name:r.name.trim(),photo:r.photo,phone:"",email:"",color:COLORS[i%COLORS.length]})),
+      categories:SUGG.filter(s=>cats.includes(s[0])).map(s=>({id:uid(),name:s[0],icon:s[1],color:s[2]}))})};
+  return <Modal title={first?"Who are you living with? 🏡":"Create a new room"} onClose={onClose} wide><form onSubmit={go}>
+    <Field label="Room / flat / group name"><input value={f.name} onChange={e=>setF({...f,name:e.target.value})} placeholder="e.g. Sunrise Apartments 4B"/></Field>
+    <Field label="Location (optional)"><input value={f.loc} onChange={e=>setF({...f,loc:e.target.value})}/></Field>
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 80px",gap:8}}><Field label="Monthly budget"><input type="number" value={f.budget} onChange={e=>setF({...f,budget:e.target.value})} placeholder="0 = none"/></Field><Field label="Billing cycle starts on day"><input type="number" min="1" max="28" value={f.start} onChange={e=>setF({...f,start:e.target.value})}/></Field><Field label="Currency"><input value={f.cur} maxLength={3} onChange={e=>setF({...f,cur:e.target.value})}/></Field></div>
+    <label>Members (add as many as you like)</label>
+    {rows.map((r,i)=><div key={r.id} style={{display:"flex",gap:10,alignItems:"center",marginBottom:8}}><PhotoPick m={{name:r.name||"?",photo:r.photo,color:COLORS[i%COLORS.length]}} onPick={p=>setRow(r.id,{photo:p})}/><input placeholder={`Member ${i+1} name`} value={r.name} onChange={e=>setRow(r.id,{name:e.target.value})}/>{rows.length>2&&<button type="button" className="btn d" onClick={()=>setRows(rows.filter(x=>x.id!==r.id))}>✕</button>}</div>)}
+    <button type="button" className="btn g s" onClick={()=>setRows([...rows,{id:uid(),name:"",photo:""}])}>+ Add another member</button>
+    <label>Starter categories (tap to toggle – you can create your own later)</label>
+    <div className="chips">{SUGG.map(s=><span key={s[0]} className={"chip"+(cats.includes(s[0])?" on":"")} onClick={()=>setCats(cats.includes(s[0])?cats.filter(x=>x!==s[0]):[...cats,s[0]])}>{s[1]} {s[0]}</span>)}</div>
+    {er&&<div className="err">{er}</div>}<button className="btn" style={{marginTop:16,width:"100%"}}>Create room 🚀</button></form></Modal>;
+}
+function MemberModal({m,room,onSave,onClose}){
+  const [f,setF]=useState(m||{name:"",photo:"",phone:"",email:""}),[er,setEr]=useState("");
+  const go=e=>{e.preventDefault();const n=f.name.trim();if(!n)return setEr("Name is required");if(room.members.some(x=>x.id!==m?.id&&x.name.toLowerCase()===n.toLowerCase()))return setEr("Name already used");onSave({...f,name:n})};
+  return <Modal title={m?"Edit member":"Add member"} onClose={onClose}><form onSubmit={go}><div style={{textAlign:"center"}}><PhotoPick m={{...f,color:m?.color||COLORS[room.members.length%COLORS.length]}} onPick={p=>setF({...f,photo:p})}/><p className="mu">Tap the avatar to upload a profile photo</p></div>
+    <Field label="Name" error={er}><input value={f.name} onChange={e=>setF({...f,name:e.target.value})}/></Field><Field label="Phone (optional)"><input value={f.phone||""} onChange={e=>setF({...f,phone:e.target.value})}/></Field><Field label="Email (optional)"><input type="email" value={f.email||""} onChange={e=>setF({...f,email:e.target.value})}/></Field>
+    <button className="btn" style={{marginTop:16,width:"100%"}}>{m?"Save changes":"Add member"}</button></form></Modal>;
+}
+function CatModal({cat,onSave,onClose}){
+  const [f,setF]=useState(cat||{name:"",icon:"📦",color:COLORS[4]}),[er,setEr]=useState("");
+  return <Modal title={cat?"Edit category":"New category"} onClose={onClose}><form onSubmit={e=>{e.preventDefault();if(!f.name.trim())return setEr("Name required");onSave({...f,name:f.name.trim()})}}>
+    <Field label="Name" error={er}><input value={f.name} onChange={e=>setF({...f,name:e.target.value})} placeholder="e.g. Netflix"/></Field>
+    <Field label="Icon"><div className="chips">{ICONS.map(i=><span key={i} className={"chip"+(f.icon===i?" on":"")} onClick={()=>setF({...f,icon:i})}>{i}</span>)}</div><input style={{marginTop:8}} value={f.icon} maxLength={4} onChange={e=>setF({...f,icon:e.target.value})} placeholder="or type any emoji"/></Field>
+    <Field label="Color (optional)"><input type="color" value={f.color} onChange={e=>setF({...f,color:e.target.value})} style={{height:42,padding:3}}/></Field><button className="btn" style={{marginTop:16,width:"100%"}}>Save category</button></form></Modal>;
+}
+function ExpenseModal({room,ex,k,upd,onClose,toast}){
+  const ms=room.members,st=room.start||1;
+  const [f,setF]=useState(ex?{title:ex.title,amount:String(ex.amount),date:ex.date,categoryId:ex.categoryId,paidBy:ex.paidBy,personal:ex.personal,type:ex.type,notes:ex.notes||"",receipt:ex.receipt||""}:{title:"",amount:"",date:mk(todayS,st)===k?todayS:k+"-01",categoryId:room.categories[0]?.id||"",paidBy:ms[0].id,personal:false,type:"equal",notes:"",receipt:""});
+  const [sel,setSel]=useState(ex?.split.sel||ms.map(m=>m.id)),[vals,setVals]=useState(ex?.split.vals||{}),[er,setEr]=useState({}),[nc,setNc]=useState(null);
+  const amt=+f.amount||0,tot=ms.reduce((a,m)=>a+(+vals[m.id]||0),0),draft={amount:amt,paidBy:f.paidBy,personal:f.personal,type:f.type,split:{sel,vals}},pv=shares(draft,ms);
+  const addCat=()=>{if(!nc.name.trim())return;const c={id:uid(),name:nc.name.trim(),icon:nc.icon||"📦",color:COLORS[room.categories.length%COLORS.length]};upd(r=>({...r,categories:[...r.categories,c]}));setF({...f,categoryId:c.id});setNc(null)};
+  const submit=e=>{e.preventDefault();const x={};
+    if(!f.title.trim())x.title="Title is required";if(!(amt>0))x.amount="Enter an amount above 0";if(!f.date)x.date="Pick a date";if(!f.categoryId)x.cat="Choose or create a category";
+    if(!f.personal){if(f.type==="equal"&&!sel.length)x.split="Select who shares this";if(f.type==="custom"&&Math.abs(tot-amt)>0.01)x.split=`Custom amounts total ${money(tot)}, must equal ${money(amt)}`;if(f.type==="percent"&&Math.abs(tot-100)>0.01)x.split=`Percentages total ${tot}%, must be 100%`}
+    if(mk(f.date,st)!==k&&!ex)x.date=`Date is outside ${mLabel(k)} – switch month first`;
+    setEr(x);if(Object.keys(x).length)return;
+    const e2={id:ex?.id||uid(),title:f.title.trim(),amount:amt,date:f.date,categoryId:f.categoryId,paidBy:f.paidBy,personal:f.personal,type:f.type,notes:f.notes,receipt:f.receipt,split:f.type==="equal"?{sel}:{vals}};
+    upd(r=>({...r,expenses:ex?r.expenses.map(y=>y.id===ex.id?e2:y):[...r.expenses,e2]}));toast(ex?"Expense updated ✏️":"Expense added ✅");onClose()};
+  const chip=(on,fn,l,k2)=><span key={k2} className={"chip"+(on?" on":"")} onClick={fn}>{l}</span>;
+  return <Modal title={ex?"Edit expense":"Add expense"} onClose={onClose} wide><form onSubmit={submit}>
+    <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:8}}><Field label="Title" error={er.title}><input autoFocus value={f.title} onChange={e=>setF({...f,title:e.target.value})} placeholder="e.g. Weekly vegetables"/></Field><Field label={`Amount (${CUR})`} error={er.amount}><input type="number" step="0.01" value={f.amount} onChange={e=>setF({...f,amount:e.target.value})}/></Field></div>
+    <Field label="Date" error={er.date}><input type="date" value={f.date} onChange={e=>setF({...f,date:e.target.value})}/></Field>
+    <Field label="Category" error={er.cat}><div className="chips">{room.categories.map(c=>chip(f.categoryId===c.id,()=>setF({...f,categoryId:c.id}),c.icon+" "+c.name,c.id))}{chip(false,()=>setNc({name:"",icon:"📦"}),"＋ New","new")}</div>
+      {nc&&<div style={{display:"flex",gap:6,marginTop:8}}><input style={{width:64}} value={nc.icon} onChange={e=>setNc({...nc,icon:e.target.value})}/><input placeholder="Category name" value={nc.name} onChange={e=>setNc({...nc,name:e.target.value})}/><button type="button" className="btn s" onClick={addCat}>Add</button></div>}</Field>
+    <Field label="Who paid?"><div className="chips">{ms.map(m=><span key={m.id} className={"chip"+(f.paidBy===m.id?" on":"")} onClick={()=>setF({...f,paidBy:m.id})} style={{display:"flex",gap:6,alignItems:"center"}}><Av m={m} size={20}/>{m.name}</span>)}</div></Field>
+    <Field label="Type"><div className="chips">{chip(!f.personal,()=>setF({...f,personal:false}),"👥 Shared","s")}{chip(f.personal,()=>setF({...f,personal:true}),"🙋 Personal (payer only)","p")}</div></Field>
+    {!f.personal&&<Field label="How should we split?" error={er.split}><div className="chips">{[["equal","Equal"],["custom","Custom amount"],["percent","Percentage"]].map(([t,l])=>chip(f.type===t,()=>setF({...f,type:t}),l,t))}</div>
+      {f.type==="equal"&&<><label>Who used it?</label><div className="chips">{ms.map(m=>chip(sel.includes(m.id),()=>setSel(sel.includes(m.id)?sel.filter(i=>i!==m.id):[...sel,m.id]),m.name,m.id))}</div></>}
+      {f.type!=="equal"&&ms.map(m=><div key={m.id} className="row" style={{border:0,padding:"5px 0"}}><span>{m.name}</span><input style={{width:110}} type="number" placeholder={f.type==="custom"?CUR:"%"} value={vals[m.id]||""} onChange={e=>setVals({...vals,[m.id]:e.target.value})}/></div>)}</Field>}
+    <div className="card" style={{marginTop:14,padding:14,animation:"none"}}><b style={{fontSize:13}}>⚡ Live split</b>{amt>0?ms.filter(m=>pv[m.id]>0||f.paidBy===m.id).map(m=><div key={m.id} className="row" style={{padding:"6px 0"}}><span style={{display:"flex",gap:8,alignItems:"center"}}><Av m={m} size={24}/>{m.name}{f.paidBy===m.id&&<span className="tag">paid {money(amt)}</span>}</span><b>{money(pv[m.id])}</b></div>):<div className="mu" style={{marginTop:6}}>Enter an amount to see each share instantly.</div>}</div>
+    <Field label="Notes (optional)"><textarea rows="2" value={f.notes} onChange={e=>setF({...f,notes:e.target.value})}/></Field>
+    <Field label="Receipt / bill (optional)"><div style={{display:"flex",gap:10,alignItems:"center"}}>{f.receipt&&<img className="thumb" src={f.receipt}/>}<input type="file" accept="image/*" onChange={async e=>{const fl=e.target.files[0];if(fl)setF({...f,receipt:await toImg(fl,900,.7)})}}/>{f.receipt&&<button type="button" className="btn d" onClick={()=>setF({...f,receipt:""})}>✕</button>}</div></Field>
+    <button className="btn" style={{marginTop:16,width:"100%"}}>{ex?"Save changes":"Add expense"}</button></form></Modal>;
+}
+function Detail({room,e,onClose,onEdit,onDel}){
+  const s=shares(e,room.members),c=cinfo(room,e.categoryId),p=room.members.find(m=>m.id===e.paidBy);
+  return <Modal title={`${c.icon} ${e.title}`} onClose={onClose}><div className="row"><span className="mu">{e.date} · {c.name} · {e.personal?"Personal":"Shared"}</span><b style={{fontSize:20}}>{money(e.amount)}</b></div><div className="row"><span>Paid by</span><span style={{display:"flex",gap:8,alignItems:"center"}}><Av m={p} size={26}/><b>{p?.name}</b></span></div>
+    {room.members.filter(m=>s[m.id]>0).map(m=><div key={m.id} className="row"><span>{m.name}'s share</span><b>{money(s[m.id])}</b></div>)}{e.notes&&<p className="mu">📝 {e.notes}</p>}
+    {e.receipt&&<img src={e.receipt} style={{width:"100%",borderRadius:14,marginTop:8}}/>}<div style={{display:"flex",gap:8,marginTop:14}}><button className="btn" onClick={onEdit}>✏️ Edit</button><button className="btn g" onClick={onDel}>🗑 Delete</button></div></Modal>;
+}
+
+function Dashboard({room,c,go,months,setMonth,openExp,openAdd}){
+  const cats=catData(room,c),top=cats[0],mem=[...room.members].sort((a,b)=>c.paid[b.id]-c.paid[a.id])[0],left=c.budget-c.total;
+  const hist=months.slice(0,6).reverse().map(k=>({k,n:mShort(k),v:room.expenses.filter(e=>mk(e.date,room.start||1)===k).reduce((a,e)=>a+e.amount,0),c:k===c.k?"linear-gradient(90deg,var(--pr),var(--pr2))":"var(--mu)"}));
+  const pend=c.tx.length-c.done;
+  return <div>
+    <div className="grid g2"><div className="card hero hv" onClick={()=>go("expenses")}><span>Total spent · {mLabel(c.k)}</span><b><Count v={c.total}/></b><span>{c.list.length} expenses · {money(c.total/room.members.length)} avg/person</span></div>
+      <div className="card hv" onClick={()=>go("analytics")} style={{display:"flex",gap:16,alignItems:"center"}}><Ring p={c.budget?c.total/c.budget:0} label={c.budget?Math.round(c.total/c.budget*100)+"%":"–"} color={c.budget&&c.total>c.budget?"var(--bad)":"var(--pr)"}/><div><h2 style={{margin:0}}>Monthly budget</h2><div className="mu">{c.budget?`${money(c.budget)} budget`:"No budget set"}</div>{c.budget>0&&<b className={left<0?"neg":"pos"}>{left<0?money(-left)+" over":money(left)+" left"}</b>}</div></div></div>
+    <div className="grid g4"><div className="card stat hv" onClick={()=>go("members")}><span>👥 Members</span><b>{room.members.length}</b></div><div className="card stat hv" onClick={()=>go("settle")}><span>⏳ Pending settlements</span><b className={pend?"neg":"pos"}>{pend}</b></div>
+      <div className="card stat hv" onClick={()=>top&&go("expenses",{cat:top.k})}><span>🏆 Top category</span><b>{top?`${top.icon} ${top.n}`:"–"}</b></div><div className="card stat hv" onClick={()=>mem&&c.total&&go("expenses",{mem:mem.id})}><span>💪 Top contributor</span><b>{c.total&&mem?mem.name:"–"}</b></div></div>
+    <h2>Roommates</h2><div className="grid g4">{room.members.map(m=><div key={m.id} className="card hv" style={{textAlign:"center"}} onClick={()=>go("members")}><Av m={m} size={56}/><b style={{display:"block",marginTop:8}}>{m.name}</b><span className="mu">Paid {money(c.paid[m.id])}</span><div className={c.bal[m.id]>=0?"pos":"neg"}>{c.bal[m.id]>0.009?"Gets "+money(c.bal[m.id]):c.bal[m.id]<-0.009?"Owes "+money(-c.bal[m.id]):"All even"}</div></div>)}</div>
+    <div className="grid g2"><div className="card"><h2>Categories <span className="mu">(tap to filter)</span></h2><Donut data={cats} on={x=>go("expenses",{cat:x.k})}/></div><div className="card"><h2>Monthly comparison <span className="mu">(tap to open)</span></h2><Bars data={hist} on={x=>setMonth(x.k)}/></div>
+      <div className="card"><h2>Member spending</h2><Bars data={room.members.map(m=>({k:m.id,n:m.name,v:c.paid[m.id],c:m.color}))} on={()=>go("members")}/></div>
+      <div className="card"><h2>Recent expenses</h2>{c.list.length?[...c.list].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5).map(e=>{const x=cinfo(room,e.categoryId);return <div key={e.id} className="row" style={{cursor:"pointer"}} onClick={()=>openExp(e)}><span>{x.icon} <b>{e.title}</b><br/><span className="mu">{e.date} · {room.members.find(m=>m.id===e.paidBy)?.name}</span></span><b>{money(e.amount)}</b></div>}):<><Empty icon="🧾" t="No expenses this month yet."/><div style={{textAlign:"center"}}><button className="btn" onClick={openAdd}>+ Add first expense</button></div></>}</div></div></div>;
+}
+function Expenses({room,c,preset,openExp}){
+  const [q,setQ]=useState(""),[cat,setCat]=useState(preset.cat||"all"),[mem,setMem]=useState(preset.mem||"all"),[typ,setTyp]=useState("all"),[from,setFrom]=useState(""),[to,setTo]=useState(""),[mn,setMn]=useState(""),[mx,setMx]=useState(""),[sort,setSort]=useState("new");
+  let l=c.list.filter(e=>e.title.toLowerCase().includes(q.toLowerCase())&&(cat==="all"||e.categoryId===cat)&&(mem==="all"||e.paidBy===mem||shares(e,room.members)[mem]>0)&&(typ==="all"||(typ==="personal")===e.personal)&&(!from||e.date>=from)&&(!to||e.date<=to)&&(!mn||e.amount>=+mn)&&(!mx||e.amount<=+mx));
+  l=[...l].sort((a,b)=>sort==="new"?b.date.localeCompare(a.date):sort==="old"?a.date.localeCompare(b.date):sort==="hi"?b.amount-a.amount:a.amount-b.amount);
+  return <div><div className="top"><div><h1>Expenses</h1><p className="sub">{l.length} of {c.list.length} · {money(l.reduce((a,e)=>a+e.amount,0))}</p></div></div>
+    <div className="card" style={{marginBottom:14,display:"grid",gap:8,gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))"}}><input placeholder="🔍 Search…" value={q} onChange={e=>setQ(e.target.value)}/>
+      <select value={cat} onChange={e=>setCat(e.target.value)}><option value="all">All categories</option>{room.categories.map(x=><option key={x.id} value={x.id}>{x.icon} {x.name}</option>)}</select>
+      <select value={mem} onChange={e=>setMem(e.target.value)}><option value="all">All members</option>{room.members.map(m=><option key={m.id} value={m.id}>{m.name}</option>)}</select>
+      <select value={typ} onChange={e=>setTyp(e.target.value)}><option value="all">Personal + shared</option><option value="shared">Shared</option><option value="personal">Personal</option></select>
+      <input type="date" value={from} onChange={e=>setFrom(e.target.value)} title="From"/><input type="date" value={to} onChange={e=>setTo(e.target.value)} title="To"/>
+      <input type="number" placeholder="Min amount" value={mn} onChange={e=>setMn(e.target.value)}/><input type="number" placeholder="Max amount" value={mx} onChange={e=>setMx(e.target.value)}/>
+      <select value={sort} onChange={e=>setSort(e.target.value)}><option value="new">Newest</option><option value="old">Oldest</option><option value="hi">Highest</option><option value="lo">Lowest</option></select></div>
+    <div className="card">{l.length?l.map(e=>{const x=cinfo(room,e.categoryId);return <div key={e.id} className="row" style={{cursor:"pointer"}} onClick={()=>openExp(e)}><span style={{display:"flex",gap:10,alignItems:"center"}}><span style={{fontSize:26}}>{x.icon}</span><span><b>{e.title}</b> {e.receipt&&"📎"}<br/><span className="mu">{e.date} · {room.members.find(m=>m.id===e.paidBy)?.name}</span> <span className="tag">{e.personal?"Personal":"Shared"}</span></span></span><b>{money(e.amount)}</b></div>}):<Empty icon="🔎" t={c.list.length?"No expenses match your filters":"No expenses in this month yet"}/>}</div></div>;
+}
+function Members({room,c,upd,ask,toast,setModal}){
+  const rm=m=>{if(room.members.length<=2)return toast("A room needs at least 2 members");if(room.expenses.some(e=>e.paidBy===m.id))return toast(`${m.name} has paid expenses – reassign or delete them first`);
+    ask(`Remove ${m.name} from this room?`,()=>{upd(r=>({...r,members:r.members.filter(x=>x.id!==m.id),expenses:r.expenses.map(e=>({...e,split:{sel:e.split.sel?.filter(i=>i!==m.id),vals:e.split.vals&&Object.fromEntries(Object.entries(e.split.vals).filter(([i])=>i!==m.id))}}))}));toast(`${m.name} removed`)})};
+  return <div><div className="top"><div><h1>Members</h1><p className="sub">{room.members.length} people in {room.name}</p></div><button className="btn" onClick={()=>setModal({t:"member"})}>+ Add member</button></div>
+    <div className="grid g2">{room.members.map(m=>{const pr=c.share[m.id]?c.paid[m.id]/c.share[m.id]:0;return <div key={m.id} className="card hv"><div style={{display:"flex",gap:14,alignItems:"center"}}><Av m={m} size={64}/><div style={{flex:1}}><h2 style={{margin:0}}>{m.name}</h2><div className="mu">{[m.phone,m.email].filter(Boolean).join(" · ")||"No contact info"}</div>
+      <span className="pill" style={{background:c.bal[m.id]>=-0.009?"var(--ok)":"var(--bad)"}}>{c.bal[m.id]>0.009?"Receives "+money(c.bal[m.id]):c.bal[m.id]<-0.009?"Pays "+money(-c.bal[m.id]):"Even"}</span></div></div>
+      <div className="grid g4" style={{margin:"14px 0 8px",gridTemplateColumns:"1fr 1fr"}}>{[["Paid",c.paid[m.id]],["Share",c.share[m.id]],["Personal",c.pers[m.id]],["Shared",c.shr[m.id]]].map(([l,v])=><div key={l}><span className="mu">{l}</span><br/><b>{money(v)}</b></div>)}</div>
+      <div className="mu">Contribution {Math.round(pr*100)}% of share</div><div className="bar"><i style={{width:Math.min(100,pr*100)+"%",background:m.color}}/></div>
+      <div style={{marginTop:10}}><button className="btn g s" onClick={()=>setModal({t:"member",m})}>✏️ Edit</button> <button className="btn d" onClick={()=>rm(m)}>Remove</button></div></div>})}</div></div>;
+}
+function Analytics({room,c,months,setMonth}){
+  const [g,setG]=useState("daily"),dates=Object.keys(c.day).sort(),series=g==="daily"?dates.map(d=>({k:d,v:c.day[d],n:d.slice(8)})):[1,2,3,4,5].map(w=>({k:w,n:"W"+w,v:dates.filter(d=>Math.ceil(+d.slice(8)/7)===w).reduce((a,d)=>a+c.day[d],0)})).filter(x=>x.v>0),mx=Math.max(...series.map(x=>x.v),1);
+  const pi=months.indexOf(c.k),prev=months[pi+1],pt=prev?room.expenses.filter(e=>mk(e.date,room.start||1)===prev).reduce((a,e)=>a+e.amount,0):0,ch=pt?Math.round((c.total-pt)/pt*100):null,cats=catData(room,c);
+  return <div><div className="top"><div><h1>Analytics</h1><p className="sub">{mLabel(c.k)} · updates live</p></div></div>
+    <div className="grid g2"><div className="card"><h2>Category split</h2><Donut data={cats}/></div><div className="card"><h2>Member spending</h2><Bars data={room.members.map(m=>({k:m.id,n:m.name,v:c.paid[m.id],c:m.color}))}/></div>
+      <div className="card"><h2>Budget progress</h2>{c.budget?<><div className="row" style={{border:0}}><b>{money(c.total)} of {money(c.budget)}</b><span className={c.total>c.budget?"neg":"pos"}>{Math.round(c.total/c.budget*100)}%</span></div><div className="bar" style={{height:16}}><i style={{width:Math.min(100,c.total/c.budget*100)+"%",background:c.total>c.budget?"var(--bad)":"linear-gradient(90deg,var(--pr),var(--pr2))"}}/></div></>:<Empty icon="🎯" t="Set a monthly budget in Settings"/>}</div>
+      <div className="card"><h2>Shared vs personal</h2><Bars data={[{k:"s",n:"👥 Shared",v:c.total-c.pTot,c:"var(--pr)"},{k:"p",n:"🙋 Personal",v:c.pTot,c:"var(--pr2)"}]}/></div></div>
+    <div className="card" style={{marginBottom:14}}><div className="row" style={{border:0}}><h2 style={{margin:0}}>Spending timeline</h2><div className="chips">{["daily","weekly"].map(x=><span key={x} className={"chip"+(g===x?" on":"")} onClick={()=>setG(x)}>{x}</span>)}</div></div>
+      {series.length?<div style={{display:"flex",alignItems:"flex-end",gap:4,height:150,marginTop:12}}>{series.map(x=><div key={x.k} title={`${x.n}: ${money(x.v)}`} style={{flex:1,textAlign:"center"}}><div style={{height:x.v/mx*120,minHeight:4,background:"linear-gradient(180deg,var(--pr),var(--pr2))",borderRadius:5,transition:"height .8s"}}/><span className="mu" style={{fontSize:10}}>{x.n}</span></div>)}</div>:<Empty icon="📈" t="No data yet"/>}</div>
+    <div className="grid g2"><div className="card"><h2>Vs previous month</h2>{prev?<><b style={{fontSize:22}} className={ch>0?"neg":"pos"}>{ch===null?"–":(ch>0?"▲ ":"▼ ")+Math.abs(ch)+"%"}</b><p className="mu">{mLabel(prev)}: {money(pt)} → {mLabel(c.k)}: {money(c.total)}</p></>:<Empty icon="📅" t="No earlier month to compare"/>}</div>
+      <div className="card"><h2>Top categories</h2>{cats.slice(0,5).map(x=><div key={x.k} className="row"><span>{x.icon} {x.n}</span><b>{money(x.v)}</b></div>)}{!cats.length&&<Empty icon="🏷️" t="No categories used yet"/>}</div></div></div>;
+}
+function Settle({room,c,toggle}){
+  return <div><div className="top"><div><h1>Settlement</h1><p className="sub">{mLabel(c.k)} · fewest payments to square up</p></div>{badge(c)}</div>
+    <div className="grid g4">{[["Total expenses",c.total],["Avg share",c.total/room.members.length]].map(([l,v])=><div key={l} className="card stat"><span>{l}</span><b>{money(v)}</b></div>)}</div>
+    <div className="card scroll" style={{marginBottom:14}}><table><thead><tr><th>Member</th><th>Paid</th><th>Fair share</th><th>Balance</th></tr></thead><tbody>{room.members.map(m=><tr key={m.id}><td><span style={{display:"flex",gap:8,alignItems:"center"}}><Av m={m} size={26}/>{m.name}</span></td><td>{money(c.paid[m.id])}</td><td>{money(c.share[m.id])}</td><td className={c.bal[m.id]>=0?"pos":"neg"}>{c.bal[m.id]>0.009?"🟢 gets ":c.bal[m.id]<-0.009?"🔴 owes ":"⚪ "}{money(Math.abs(c.bal[m.id]))}</td></tr>)}</tbody></table></div>
+    <div className="card" style={{marginBottom:14}}><div className="row" style={{border:0}}><b>{c.done} of {c.tx.length} payments done</b></div><div className="bar" style={{height:14}}><i style={{width:(c.tx.length?c.done/c.tx.length*100:c.total?100:0)+"%",background:"linear-gradient(90deg,var(--ok),#22d3ee)"}}/></div></div>
+    <div className="card"><h2>Who pays whom</h2><Tx room={room} c={c} toggle={toggle}/></div>
+    {c.total>0&&c.tx.length>0&&c.done===c.tx.length&&<div className="card" style={{marginTop:14,textAlign:"center"}}><div style={{fontSize:54,animation:"bob 2s infinite"}}>🎉</div><h1>Month Fully Settled</h1><p className="mu">Everyone is square for {mLabel(c.k)}.</p></div>}</div>;
+}
+function Settings({room,c,upd,S,ask,toast,setModal}){
+  const [f,setF]=useState({name:room.name,loc:room.loc||"",budget:room.budget||0,start:room.start||1,cur:room.cur||"₹"}),[mb,setMb]=useState(c.budget);
+  useEffect(()=>setMb(c.budget),[c.k]);
+  const setMo=p=>upd(r=>({...r,months:{...r.months,[c.k]:{...(r.months[c.k]||{}),...p}}}));
+  const delCat=x=>{if(room.expenses.some(e=>e.categoryId===x.id))return toast("Category is used by expenses – can't delete");ask(`Delete category "${x.name}"?`,()=>{upd(r=>({...r,categories:r.categories.filter(y=>y.id!==x.id)}));toast("Category deleted")})};
+  const exportData=()=>{const blob=new Blob([JSON.stringify(room,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=room.name.replace(/\s+/g,"_")+"_backup.json";a.click()};
+  const importData=e=>{const fl=e.target.files[0];if(!fl)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.members||!d.expenses)throw 0;upd(()=>d);toast("Data imported ✅")}catch(err){toast("Invalid backup file")}};r.readAsText(fl)};
+  return <div><div className="top"><div><h1>Settings</h1><p className="sub">Rooms, months, categories &amp; backups</p></div></div>
+    <div className="grid g2"><div className="card"><h2>Room details</h2><Field label="Name"><input value={f.name} onChange={e=>setF({...f,name:e.target.value})}/></Field><Field label="Location"><input value={f.loc} onChange={e=>setF({...f,loc:e.target.value})}/></Field>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 70px",gap:8}}><Field label="Default budget"><input type="number" value={f.budget} onChange={e=>setF({...f,budget:e.target.value})}/></Field><Field label="Cycle start day"><input type="number" min="1" max="28" value={f.start} onChange={e=>setF({...f,start:e.target.value})}/></Field><Field label="Currency"><input maxLength={3} value={f.cur} onChange={e=>setF({...f,cur:e.target.value})}/></Field></div>
+      <button className="btn" style={{marginTop:14}} onClick={()=>{if(!f.name.trim())return toast("Name required");upd(r=>({...r,name:f.name.trim(),loc:f.loc,budget:+f.budget||0,start:Math.min(28,Math.max(1,+f.start||1)),cur:f.cur||"₹"}));toast("Room saved")}}>Save</button></div>
+      <div className="card"><h2>{mLabel(c.k)} {c.archived&&"· 🔒 archived"}</h2><Field label="Budget for this month"><div style={{display:"flex",gap:8}}><input type="number" value={mb} onChange={e=>setMb(e.target.value)}/><button className="btn" onClick={()=>{setMo({budget:+mb||0});toast("Month budget updated")}}>Set</button></div></Field>
+        <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:14}}><button className="btn g" onClick={()=>{setMo({archived:!c.archived});toast(c.archived?"Month reopened":"Month archived 🔒")}}>{c.archived?"Reopen month":"Archive month"}</button><button className="btn g" onClick={()=>setModal({t:"month"})}>＋ Create month</button>
+        <button className="btn d" onClick={()=>ask(`Delete all ${c.list.length} expenses in ${mLabel(c.k)}?`,()=>{upd(r=>({...r,expenses:r.expenses.filter(e=>mk(e.date,r.start||1)!==c.k),months:{...r.months,[c.k]:{}}}));toast("Month reset")})}>Reset month</button></div></div></div>
+    <div className="card" style={{marginBottom:14}}><div className="row" style={{border:0}}><h2 style={{margin:0}}>Categories</h2><button className="btn s" onClick={()=>setModal({t:"cat"})}>+ New</button></div>{room.categories.length?room.categories.map(x=><div key={x.id} className="row"><span><i style={{display:"inline-block",width:10,height:10,borderRadius:3,background:x.color,marginRight:8}}/>{x.icon} {x.name}</span><span><button className="btn g s" onClick={()=>setModal({t:"cat",cat:x})}>✏️</button><button className="btn d" onClick={()=>delCat(x)}>🗑</button></span></div>):<Empty icon="🏷️" t="No categories yet – create your first one"/>}</div>
+    <div className="card" style={{marginBottom:14}}><h2>Backup &amp; restore</h2><p className="mu">Everything is saved in this browser only. Export a backup to move it to another device, or import one back.</p><div style={{display:"flex",gap:8,flexWrap:"wrap"}}><button className="btn" onClick={exportData}>⬇ Export room backup</button><label className="btn g" style={{cursor:"pointer"}}>⬆ Import backup<input type="file" accept="application/json" style={{display:"none"}} onChange={importData}/></label></div></div>
+    <div className="card"><div className="row" style={{border:0}}><h2 style={{margin:0}}>Your rooms</h2><button className="btn s" onClick={()=>setModal({t:"room"})}>+ New room</button></div>{S.rooms.map(r=><div key={r.id} className="row"><span>{r.id===S.active?"✅ ":""}<b>{r.name}</b> <span className="mu">{r.members.length} members</span></span><span>{r.id!==S.active&&<button className="btn g s" onClick={()=>S.pick(r.id)}>Open</button>}<button className="btn d" onClick={()=>ask(`Delete room "${r.name}" and all its data?`,()=>S.del(r.id))}>🗑</button></span></div>)}</div></div>;
+}
+
+function App(){
+  const [S,setS]=useState(()=>{const s=api.load();return{rooms:s.rooms||[],active:s.active||null,theme:s.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}});
+  const [page,setPage]=useState("dashboard"),[mo,setMo]=useState(null),[preset,setPreset]=useState({}),[modal,setModal]=useState(null),[cf,setCf]=useState(null),[toasts,setToasts]=useState([]),[loading,setLoading]=useState(true);
+  const room=S.rooms.find(r=>r.id===S.active)||S.rooms[0];CUR=room?.cur||"₹";
+  const toast=t=>{const id=uid();setToasts(x=>[...x,{id,t}]);setTimeout(()=>setToasts(x=>x.filter(y=>y.id!==id)),2600)};
+  useEffect(()=>{setTimeout(()=>setLoading(false),700)},[]);
+  useEffect(()=>{if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{})},[]);
+  useEffect(()=>{if(!api.save(S))toast("⚠ Storage full – try smaller photos/receipts");document.documentElement.dataset.theme=S.theme},[S]);
+  const upd=fn=>setS(s=>({...s,rooms:s.rooms.map(r=>r.id===room.id?fn(r):r)}));
+  const ask=(msg,yes)=>setCf({msg,yes});
+  if(loading)return <div className="main"><div className="grid g4" style={{marginTop:30}}>{[0,1,2,3].map(i=><div key={i} className="sk"/>)}</div><div className="grid g2"><div className="sk" style={{height:220}}/><div className="sk" style={{height:220}}/></div></div>;
+  const addRoom=r=>{setS(s=>({...s,rooms:[...s.rooms,r],active:r.id}));setModal(null);setMo(null);setPage("dashboard");toast(`Welcome to ${r.name} 🎉`)};
+  if(!room)return <div><div className="welcome"><div style={{fontSize:64,animation:"bob 2.5s infinite"}}>🏡</div><h1 style={{background:"linear-gradient(90deg,var(--pr),var(--pr2))",WebkitBackgroundClip:"text",backgroundClip:"text",color:"transparent"}}>Welcome to RoomSplit 👋</h1><p className="sub" style={{fontSize:16,maxWidth:420}}>Create your room and add your roommates to get started.</p>
+    <div style={{display:"flex",gap:10,flexWrap:"wrap",justifyContent:"center"}}><button className="btn" onClick={()=>setModal({t:"room"})}>+ Create Room</button><button className="btn g" onClick={()=>setModal({t:"room"})}>+ Add Members</button></div></div>
+    {modal&&<RoomWizard first onSave={addRoom} onClose={()=>setModal(null)}/>}</div>;
+  const st=room.start||1,curM=mk(todayS,st),months=[...new Set([curM,...Object.keys(room.months),...room.expenses.map(e=>mk(e.date,st))])].sort().reverse(),k=mo&&months.includes(mo)?mo:curM,c=calc(room,k);
+  const go=(p,pr={})=>{setPage(p);setPreset(pr);scrollTo(0,0)};
+  const toggle=key=>{const on=!c.settled[key];upd(r=>({...r,months:{...r.months,[k]:{...(r.months[k]||{}),settled:{...(r.months[k]?.settled||{}),[key]:on}}}}));toast(on?"Payment marked as paid 💸":"Marked pending");if(on&&c.done+1===c.tx.length)setCf({confetti:1})};
+  const openAdd=()=>{if(c.archived)return toast("This month is archived – reopen it in Settings");setModal({t:"exp"})};
+  const S2={...S,pick:id=>{setS(s=>({...s,active:id}));setMo(null)},del:id=>{setS(s=>{const rs=s.rooms.filter(r=>r.id!==id);return{...s,rooms:rs,active:rs[0]?.id||null}});toast("Room deleted")}};
+  const nav=[["dashboard","🏠","Dashboard"],["expenses","🧾","Expenses"],["members","👥","Members"],["analytics","📊","Analytics"],["settle","🤝","Settle"],["settings","⚙️","Settings"]];
+  return <div>
+    <nav className="side"><div className="lg">RoomSplit</div>{nav.map(([p,i,l])=><button key={p} className={page===p?"on":""} onClick={()=>go(p)}><span>{i}</span>{l}</button>)}</nav>
+    <main className="main"><div>
+      <div className="top"><div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}><select style={{width:"auto"}} value={room.id} onChange={e=>S2.pick(e.target.value)}>{S.rooms.map(r=><option key={r.id} value={r.id}>🏠 {r.name}</option>)}</select>{room.loc&&<span className="mu">📍 {room.loc}</span>}</div>
+        <div style={{display:"flex",gap:8,alignItems:"center"}}><select style={{width:"auto"}} value={k} onChange={e=>setMo(e.target.value)}>{months.map(m=><option key={m} value={m}>{mLabel(m)}</option>)}</select><button className="btn g s" onClick={()=>setModal({t:"month"})}>＋</button><button className="btn g s" onClick={()=>setS({...S,theme:S.theme==="dark"?"light":"dark"})}>{S.theme==="dark"?"☀️":"🌙"}</button></div></div>
+      {c.archived&&<div className="card" style={{marginBottom:14,padding:10}}>🔒 {mLabel(k)} is archived (read-only).</div>}
+      <div key={page+k} style={{animation:"up .4s"}}>
+        {page==="dashboard"&&<Dashboard room={room} c={c} go={go} months={months} setMonth={setMo} openExp={e=>setModal({t:"det",e})} openAdd={openAdd}/>}
+        {page==="expenses"&&<Expenses room={room} c={c} preset={preset} openExp={e=>setModal({t:"det",e})}/>}
+        {page==="members"&&<Members room={room} c={c} upd={upd} ask={ask} toast={toast} setModal={setModal}/>}
+        {page==="analytics"&&<Analytics room={room} c={c} months={months} setMonth={setMo}/>}
+        {page==="settle"&&<Settle room={room} c={c} toggle={toggle}/>}
+        {page==="settings"&&<Settings room={room} c={c} upd={upd} S={S2} ask={ask} toast={toast} setModal={setModal}/>}
+      </div></div></main>
+    <button className="btn fab" onClick={openAdd}>+ Add Expense</button>
+    {modal?.t==="exp"&&<ExpenseModal room={room} ex={modal.e} k={k} upd={upd} toast={toast} onClose={()=>setModal(null)}/>}
+    {modal?.t==="det"&&<Detail room={room} e={modal.e} onClose={()=>setModal(null)} onEdit={()=>c.archived?toast("Month is archived"):setModal({t:"exp",e:modal.e})} onDel={()=>c.archived?toast("Month is archived"):ask(`Delete "${modal.e.title}"?`,()=>{upd(r=>({...r,expenses:r.expenses.filter(x=>x.id!==modal.e.id)}));setModal(null);toast("Expense deleted 🗑")})}/>}
+    {modal?.t==="member"&&<MemberModal m={modal.m} room={room} onClose={()=>setModal(null)} onSave={m=>{upd(r=>({...r,members:modal.m?r.members.map(x=>x.id===m.id?m:x):[...r.members,{...m,id:uid(),color:COLORS[r.members.length%COLORS.length]}]}));setModal(null);toast(modal.m?"Member updated":"Member added 🎉")}}/>}
+    {modal?.t==="cat"&&<CatModal cat={modal.cat} onClose={()=>setModal(null)} onSave={x=>{upd(r=>({...r,categories:modal.cat?r.categories.map(y=>y.id===x.id?x:y):[...r.categories,{...x,id:uid()}]}));setModal(null);toast("Category saved")}}/>}
+    {modal?.t==="room"&&<RoomWizard onSave={addRoom} onClose={()=>setModal(null)}/>}
+    {modal?.t==="month"&&<Modal title="Create / open a month" onClose={()=>setModal(null)}><input type="month" id="nm" defaultValue={k}/><button className="btn" style={{marginTop:14,width:"100%"}} onClick={()=>{const v=document.getElementById("nm").value;if(!v)return;upd(r=>({...r,months:{...r.months,[v]:r.months[v]||{}}}));setMo(v);setModal(null);toast(mLabel(v)+" ready 📅")}}>Open month</button></Modal>}
+    {cf?.msg&&<Modal title="Are you sure?" onClose={()=>setCf(null)}><p>{cf.msg}</p><div style={{display:"flex",gap:8}}><button className="btn" onClick={()=>{cf.yes();setCf(null)}}>Confirm</button><button className="btn g" onClick={()=>setCf(null)}>Cancel</button></div></Modal>}
+    {cf?.confetti&&<div>{Array.from({length:18},(_,i)=><span key={i} className="cf" style={{left:(i*37)%100+"%",animationDelay:(i%6)*.25+"s"}} onAnimationEnd={i===17?()=>setCf(null):undefined}>{["🎉","✨","💸","🎊"][i%4]}</span>)}</div>}
+    <div className="toast">{toasts.map(x=><div key={x.id}>{x.t}</div>)}</div></div>;
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script></body></html>
