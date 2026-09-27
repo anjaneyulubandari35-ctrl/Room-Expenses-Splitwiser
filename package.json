@@ -1,0 +1,28 @@
+{
+  "name": "roomsplit",
+  "version": "1.0.0",
+  "description": "A fully dynamic, installable web app for splitting shared-living expenses. No fixed people, categories, or amounts — everything is created by whoever opens it.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anjaneyulubandari35-ctrl/Room-Expenses-Splitwiser.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/anjaneyulubandari35-ctrl/Room-Expenses-Splitwiser/issues"
+  },
+  "homepage": "https://github.com/anjaneyulubandari35-ctrl/Room-Expenses-Splitwiser#readme",
+  "dependencies": {
+    "@capacitor/core": "^8.5.2"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/cli": "^8.5.2"
+  }
+}
